@@ -1,0 +1,238 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* 
+ * SECURE CHAT - Premium Color Palette
+ * =====================================
+ * Based on #E8EDF2 with Signal/Telegram-inspired secure aesthetics
+ * 
+ * COLOR PALETTE (HEX values):
+ * ---------------------------
+ * Background Main:    #E8EDF2 - Soft blue-gray (main canvas)
+ * Background Card:    #FFFFFF - Pure white (cards, inputs)
+ * Background Sidebar: #F4F7FA - Lighter blue-gray (sidebar/header)
+ * 
+ * Primary (Trust Blue): #2563EB - Strong blue (CTAs, links, encryption indicators)
+ * Primary Hover:        #1D4ED8 - Darker blue
+ * Primary Light:        #DBEAFE - Very light blue (backgrounds)
+ * 
+ * Sent Bubble:         #2563EB - Trust blue (own messages)
+ * Sent Bubble Text:    #FFFFFF - White text
+ * Received Bubble:     #FFFFFF - White (other's messages)
+ * Received Bubble Text:#1E293B - Dark slate
+ * 
+ * Text Primary:        #0F172A - Near black (headings)
+ * Text Secondary:      #475569 - Medium slate (body)
+ * Text Muted:          #94A3B8 - Light slate (timestamps, hints)
+ * 
+ * Border Light:        #E2E8F0 - Subtle dividers
+ * Border Medium:       #CBD5E1 - Input borders
+ * 
+ * Success/Secure:      #059669 - Green (verified, secure indicators)
+ * Warning:             #D97706 - Amber (caution states)
+ * Destructive:         #DC2626 - Red (delete, errors)
+ * 
+ * Hover State:         #F1F5F9 - Light hover background
+ */
+
+:root {
+  /* Premium secure chat theme based on #E8EDF2 */
+  --background: #e8edf2;
+  --foreground: #0f172a;
+
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+
+  --secondary: #f4f7fa;
+  --secondary-foreground: #1e293b;
+
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+
+  --accent: #dbeafe;
+  --accent-foreground: #1e40af;
+
+  --destructive: #dc2626;
+  --destructive-foreground: #fecaca;
+
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #2563eb;
+
+  /* Custom chat-specific tokens */
+  --chat-sent: #2563eb;
+  --chat-sent-foreground: #ffffff;
+  --chat-received: #ffffff;
+  --chat-received-foreground: #1e293b;
+  --chat-secure: #059669;
+  --chat-warning: #d97706;
+  --chat-hover: #f1f5f9;
+  --chat-header: #f4f7fa;
+
+  --chart-1: #2563eb;
+  --chart-2: #059669;
+  --chart-3: #8b5cf6;
+  --chart-4: #f59e0b;
+  --chart-5: #ec4899;
+
+  --radius: 0.75rem;
+
+  --sidebar: #f4f7fa;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #2563eb;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #dbeafe;
+  --sidebar-accent-foreground: #1e40af;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #2563eb;
+}
+
+.dark {
+  /* Dark mode with secure blue accents */
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+
+  --card: #1e293b;
+  --card-foreground: #f1f5f9;
+
+  --popover: #1e293b;
+  --popover-foreground: #f1f5f9;
+
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+
+  --secondary: #334155;
+  --secondary-foreground: #f1f5f9;
+
+  --muted: #334155;
+  --muted-foreground: #94a3b8;
+
+  --accent: #1e3a5f;
+  --accent-foreground: #93c5fd;
+
+  --destructive: #b91c1c;
+  --destructive-foreground: #fecaca;
+
+  --border: #334155;
+  --input: #334155;
+  --ring: #3b82f6;
+
+  --chat-sent: #3b82f6;
+  --chat-sent-foreground: #ffffff;
+  --chat-received: #334155;
+  --chat-received-foreground: #f1f5f9;
+  --chat-secure: #10b981;
+  --chat-warning: #fbbf24;
+  --chat-hover: #1e293b;
+  --chat-header: #1e293b;
+
+  --chart-1: #3b82f6;
+  --chart-2: #10b981;
+  --chart-3: #a78bfa;
+  --chart-4: #fbbf24;
+  --chart-5: #f472b6;
+
+  --sidebar: #1e293b;
+  --sidebar-foreground: #f1f5f9;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1e3a5f;
+  --sidebar-accent-foreground: #93c5fd;
+  --sidebar-border: #334155;
+  --sidebar-ring: #3b82f6;
+}
+
+@theme inline {
+  --font-sans: "Inter", "Geist", "Geist Fallback", system-ui, sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Custom chat colors exposed to Tailwind */
+  --color-chat-sent: var(--chat-sent);
+  --color-chat-sent-foreground: var(--chat-sent-foreground);
+  --color-chat-received: var(--chat-received);
+  --color-chat-received-foreground: var(--chat-received-foreground);
+  --color-chat-secure: var(--chat-secure);
+  --color-chat-warning: var(--chat-warning);
+  --color-chat-hover: var(--chat-hover);
+  --color-chat-header: var(--chat-header);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+/* Custom utility classes for chat app */
+@layer utilities {
+  .chat-bubble-sent {
+    @apply bg-chat-sent text-chat-sent-foreground;
+  }
+
+  .chat-bubble-received {
+    @apply bg-chat-received text-chat-received-foreground shadow-sm;
+  }
+
+  .encrypt-indicator {
+    @apply text-chat-secure;
+  }
+
+  .glass-header {
+    @apply bg-chat-header/80 backdrop-blur-md border-b border-border;
+  }
+
+  .hover-card {
+    @apply hover:bg-chat-hover transition-colors duration-150;
+  }
+}
