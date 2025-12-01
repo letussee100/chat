@@ -1,0 +1,47 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "prisma generate && next build",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "functions": {
+    "app/api/auth/magic/route.ts": {
+      "maxDuration": 10
+    },
+    "app/api/auth/verify/route.ts": {
+      "maxDuration": 10
+    },
+    "app/api/auth/session/route.ts": {
+      "maxDuration": 10
+    },
+    "app/api/messages/route.ts": {
+      "maxDuration": 30
+    },
+    "app/api/signal/route.ts": {
+      "maxDuration": 10
+    },
+    "app/api/delete/route.ts": {
+      "maxDuration": 10
+    },
+    "app/api/chats/route.ts": {
+      "maxDuration": 15
+    }
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/health",
+      "destination": "/api/health"
+    }
+  ]
+}

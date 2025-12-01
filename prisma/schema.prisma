@@ -1,0 +1,138 @@
+// Prisma Schema for Secure Chat Application
+// PostgreSQL database with E2EE metadata storage
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  avatar        String?
+  publicKey     String?   // For signature verification (base64 encoded)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  sessions      Session[]
+  sentMessages  Message[] @relation("SentMessages")
+  chatMembers   ChatMember[]
+  magicLinks    MagicLink[]
+  signalEvents  SignalEvent[]
+  deleteEvents  DeleteEvent[] @relation("DeleteEventSender")
+}
+
+model Session {
+  id          String   @id @default(cuid())
+  userId      String
+  token       String   @unique
+  deviceInfo  String?
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([token])
+  @@index([userId])
+}
+
+model MagicLink {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([token])
+}
+
+model Chat {
+  id        String   @id @default(cuid())
+  name      String?
+  isGroup   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  members   ChatMember[]
+  messages  Message[]
+  signalEvents SignalEvent[]
+  deleteEvents DeleteEvent[]
+}
+
+model ChatMember {
+  id        String   @id @default(cuid())
+  chatId    String
+  userId    String
+  role      String   @default("member") // "admin" | "member"
+  joinedAt  DateTime @default(now())
+  
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([chatId, userId])
+  @@index([chatId])
+  @@index([userId])
+}
+
+model Message {
+  id            String   @id @default(cuid())
+  chatId        String
+  senderId      String
+  // IMPORTANT: Only ciphertext is stored - server never sees plaintext
+  ciphertext    String   // Base64 encoded encrypted message
+  iv            String   // Initialization vector for AES-GCM
+  contentType   String   @default("text") // "text" | "file" | "image"
+  createdAt     DateTime @default(now())
+  
+  chat          Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  sender        User     @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  deleteEvents  DeleteEvent[]
+  
+  @@index([chatId, createdAt])
+  @@index([senderId])
+}
+
+// Ephemeral signaling for WebRTC
+model SignalEvent {
+  id          String   @id @default(cuid())
+  chatId      String
+  fromUserId  String
+  toUserId    String?  // null = broadcast to all in chat
+  type        String   // "offer" | "answer" | "ice-candidate"
+  payload     String   // JSON stringified SDP or ICE candidate
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime // Auto-cleanup after expiry
+  consumed    Boolean  @default(false)
+  
+  chat        Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  fromUser    User     @relation(fields: [fromUserId], references: [id], onDelete: Cascade)
+  
+  @@index([chatId, toUserId, consumed])
+  @@index([expiresAt])
+}
+
+// Delete events for "Delete for Everyone" feature
+model DeleteEvent {
+  id          String   @id @default(cuid())
+  messageId   String
+  chatId      String
+  senderId    String   // Original message sender
+  signature   String   // Cryptographic signature for verification
+  timestamp   DateTime @default(now())
+  delivered   Boolean  @default(false)
+  
+  message     Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  chat        Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  sender      User     @relation("DeleteEventSender", fields: [senderId], references: [id], onDelete: Cascade)
+  
+  @@index([chatId, delivered])
+  @@index([messageId])
+}
